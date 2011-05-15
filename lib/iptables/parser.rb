@@ -10,20 +10,19 @@ module IPTables
     end
 
     def initialize(lexer)
-      @lexer = TokenBuffer.new(lexer, 2)
+      @token_buffer = TokenBuffer.new(lexer, 1)
       @tables = []
-      advance
     end
 
     def parse
-      until @lexer.done?
-        case @lookahead.type
+      until @token_buffer.done?
+        case lookahead.type
           when :SPLAT then table
           when :COLON then chain
           when :WORD  then commit
           when :DASH  then rule
         else
-          error("Invalid top-level token: #{@lookahead}")
+          error("Invalid top-level token: #{lookahead}")
         end
       end
     end
@@ -81,23 +80,23 @@ module IPTables
     end
 
     def statement_end?
-      @lexer.done? || expect(:NEW_LINE)
+      @token_buffer.done? || expect(:NEW_LINE)
     end
 
     def statement_end
-      @lexer.done? || match(:NEW_LINE)
+      @token_buffer.done? || match(:NEW_LINE)
     end
 
     def expect(sym)
-      @lookahead && @lookahead.type == sym
+      lookahead && lookahead.type == sym
     end
 
     def match(*types)
       types.map do |type|
-        lookahead_type = @lookahead && @lookahead.type
+        lookahead_type = lookahead && lookahead.type
 
         if lookahead_type == type
-          current = @lookahead
+          current = lookahead
           advance
           current
         else
@@ -111,15 +110,19 @@ module IPTables
     end
 
     def alternations(*types)
-      if types.include? @lookahead.type
-        match(@lookahead.type)
+      if types.include? lookahead.type
+        match lookahead.type
       else
-        error "expecting #{types.join(", ")}; found #{@lookahead.type}"
+        error "expecting #{types.join(", ")}; found #{lookahead.type}"
       end
     end
 
     def advance
-      @lookahead = @lexer.next_token
+      @token_buffer.next_token
+    end
+
+    def lookahead(n = 0)
+      @token_buffer[n]
     end
 
     def error(message)
