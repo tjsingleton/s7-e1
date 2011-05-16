@@ -30,8 +30,9 @@ module IPTables
         when :SPACE     then whitespace
         when :DIGIT     then digits
         when :LETTER    then word
+        when :D_QUOTE   then quote
         when :COLON, :SPLAT, :R_BRACKET, :L_BRACKET, :DOT, :DASH, :BANG,
-             :D_QUOTE, :SLASH, :COMMA, :NEW_LINE
+             :SLASH, :COMMA, :NEW_LINE
           token type
       else
         raise(LexerError, "Invalid token: #{lookahead}") unless done?
@@ -71,8 +72,16 @@ module IPTables
     end
 
     def word
-      text = @scanner.scan /[a-zA-Z_]+/
+      text = @scanner.scan /^[a-zA-Z_][a-zA-Z_0-9]{0,}/
       text && Token.new(:WORD, text)
+    end
+
+    def quote
+      advance # skip first quote
+      text = @scanner.scan_until(/"/)
+      raise(LexerError, "Missing closing quote") unless text
+      without_last_quote = text[0, text.length-1]
+      Token.new(:WORD, without_last_quote)
     end
 
     def digits

@@ -33,7 +33,6 @@ describe Lexer do
    '.' => :DOT,
    '-' => :DASH,
    '!' => :BANG,
-   '"' => :D_QUOTE,
    '/' => :SLASH,
    "," => :COMMA}.each do |text, type|
 
@@ -46,6 +45,14 @@ describe Lexer do
   it "detects a series of letters as WORD" do
     lexer = Lexer.new("abc")
     lexer.next_token.type.should == :WORD
+  end
+
+  it "detects a quoted string as WORD" do
+    lexer = Lexer.new('"abc 123 efg"')
+    token = lexer.next_token
+
+    token.type.should == :WORD
+    token.text.should == "abc 123 efg"
   end
 
   it "detects a series of letters as DIGITS" do
