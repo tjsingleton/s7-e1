@@ -4,4 +4,8 @@ class Table
   def initialize(name)
     @name, @chains = name, {}
   end
+
+  def to_s
+    "<Table: #{@name}>"
+  end
 end

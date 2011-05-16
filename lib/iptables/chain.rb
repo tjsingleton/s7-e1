@@ -12,4 +12,8 @@ class Chain
 
     @rules = []
   end
+
+  def to_s
+    "<Chain: #{@name}>"
+  end
 end
