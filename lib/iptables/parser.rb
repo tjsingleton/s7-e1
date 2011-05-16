@@ -2,6 +2,20 @@ module IPTables
   class Parser
     class ParserError < StandardError; end
 
+    SHORT_OPTS_TO_LONG = {
+        "p" => "proto",
+        "s" => "source",
+        "d" => "destination",
+        "i" => "in-interface",
+        "j" => "jump",
+        "g" => "goto",
+        "m" => "match",
+        "n" => "numeric",
+        "o" => "out-interface",
+        "t" => "table",
+        "x" => "ex"
+    }
+
     attr_reader :tables
 
     def self.parse(input)
@@ -61,7 +75,7 @@ module IPTables
       end
 
       Rule.new(chain:    chain,
-               command:  command.text, # TODO Run through options normalizer
+               command:  "APPEND",
                criteria: Hash[criteria])
 
       statement_end
@@ -77,13 +91,15 @@ module IPTables
         break unless optional(:DASH)
       end
 
-      parts.join("-") # TODO Run through options normalizer
+      key = parts.join("-")
+
+      SHORT_OPTS_TO_LONG[key] || key
     end
 
     def rule_value
       tokens = []
       until rule_end?
-        tokens << parse_value
+        tokens.push *Array(parse_value)
       end
       tokens
     end
@@ -142,8 +158,9 @@ module IPTables
     end
 
     def time_limit
-      quantity = match(:DIGITS)
-      division = match(:SLASH) && match(:WORD)
+      quantity = match(:DIGITS).text.to_i
+      division = match(:SLASH) && match(:WORD).text
+
       TimeLimit.new(quantity, division)
     end
 
