@@ -1,7 +1,8 @@
 class Rule
-  attr_reader :chain, :options
+  attr_reader :chain, :criteria
 
-  def initialize(chain, options = {})
-    @chain, @options = chain, options
+  def initialize(options = {})
+    @chain, @parts = options.values_at :chain, :criteria
+    @chain.rules << self
   end
 end

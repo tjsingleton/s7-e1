@@ -9,5 +9,7 @@ class Chain
 
     @table = options[:table]
     @table.chains[@name] = self
+
+    @rules = []
   end
 end
