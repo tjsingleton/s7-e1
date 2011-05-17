@@ -1,4 +1,4 @@
-require "./lib/iptables"
+require_relative "../lib/iptables"
 include IPTables
 
 describe Parser do

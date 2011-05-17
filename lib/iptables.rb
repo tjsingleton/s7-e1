@@ -1,9 +1,9 @@
-require "iptables/lexer"
-require "iptables/token_buffer"
-require "iptables/parser"
-require "iptables/table"
-require "iptables/chain"
-require "iptables/rule"
+require_relative "iptables/lexer"
+require_relative "iptables/token_buffer"
+require_relative "iptables/parser"
+require_relative "iptables/table"
+require_relative "iptables/chain"
+require_relative "iptables/rule"
 
 module IPTables
   class IPTableError < StandardError; end
