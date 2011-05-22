@@ -28,6 +28,6 @@ This library has only been tested on Ruby 1.9.2.
     rule.criteria
     # => {"in-interface"=>["eth1"], "jump"=>["ACCEPT"]}
 
-## Questions and/or Comments
+### Questions and/or Comments
 
 Feel free to email [TJ Singleton](tjsingleton@vantagestreet.com) with any questions.
