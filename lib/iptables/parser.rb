@@ -39,6 +39,7 @@ module IPTables
           error("Invalid top-level token: #{lookahead}")
         end
       end
+      tables
     end
 
     private

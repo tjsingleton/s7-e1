@@ -14,6 +14,6 @@ module IPTables
       raise IPTableError, "Could not locate iptables-save"
     end
 
-    Parser.parse(`iptables-save`).tables
+    Parser.parse(`iptables-save`)
   end
 end
